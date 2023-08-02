@@ -1,11 +1,15 @@
 import os
 import sys
 sys.path.append("..")
+
+from train.utils.reward_model import GPTNeoXRewardModelConfig
+print(f"GPTNeoXRewardModelConfig={GPTNeoXRewardModelConfig}")
+
 import json
 import random
 import numpy as np
 import tqdm
-from utils.metrics import create_reward_fn_2
+from train.utils.metrics import create_reward_fn_2
 get_score, reward_batch_size = create_reward_fn_2()
 
 def split_trans(split):

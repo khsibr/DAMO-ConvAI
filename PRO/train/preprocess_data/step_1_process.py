@@ -18,12 +18,12 @@ Roles = {
 def hhrlhf_preprocess(path,filename,index_generator,split='train'):
     with open(os.path.join(path,filename),'r', encoding='utf-8') as f:
         raw = f.readlines()
-    
+
     data = []
     for line in raw:
         line = json.loads(line)
         data.append(line)
-    
+
     # Thank OpenAssistant for their helpful public code:
     # https://github.com/LAION-AI/Open-Assistant/blob/c6591bd04dd337c716d097b2d267b92403850396/model/model_training/custom_datasets/rank_datasets.py
     def _split_dialogue(text: str):
@@ -76,7 +76,7 @@ def hhrlhf_preprocess(path,filename,index_generator,split='train'):
                 prefix.append(chosen[-1][0])
                 good_reply = chosen[-1][1]  # last part of dialog, the text
                 bad_reply = rejected[-1][1]  # last part of dialog, the text
-                
+
                 one_sample = {
                     'extended':[
                         {'id':next(index_generator), 'prefix': prefix, 'target_num':2, 'target':[]}
@@ -102,7 +102,7 @@ def hhrlhf_preprocess(path,filename,index_generator,split='train'):
             chosen = _split_dialogue(sample["chosen"]) # [(Role, Post), (Role, Post), ... ]
             rejected = _split_dialogue(sample["rejected"]) # [(Role, Post), (Role, Post), ... ]
             assert chosen[0][0] == "<|prompter|>" and rejected[0][0] == "<|prompter|>"
-            
+
             # prepare chosen sample
             prefix = []
             step = 0
@@ -120,7 +120,7 @@ def hhrlhf_preprocess(path,filename,index_generator,split='train'):
                         ],
                         'available':[],
                         'available_for_test':[{
-                            'id': next(index_generator), 
+                            'id': next(index_generator),
                             'prefix': temp_prefix,
                             'target_num': 1,
                             'target':[temp_reply]
@@ -156,7 +156,7 @@ def hhrlhf_preprocess(path,filename,index_generator,split='train'):
                         ],
                         'available':[],
                         'available_for_test':[{
-                            'id': next(index_generator), 
+                            'id': next(index_generator),
                             'prefix': temp_prefix,
                             'target_num': 1,
                             'target':[temp_reply]
@@ -200,21 +200,23 @@ if __name__ == "__main__":
     }
     # process raw datasets
     # hhrlhf
+    base_dir = '/home/ryadhkhsib/Dev/workspaces/fetch/hh-rlhf/'
     res['hhrlhf'] = [
-        hhrlhf_preprocess(os.path.join('..','..','data','raw_data','hhrlhf','harmless-base'),'train.jsonl',global_index_generator,split='train'),
-        # hhrlhf_preprocess(os.path.join('..','..','data','raw_data','hhrlhf','harmless-base'),'test.jsonl',global_index_generator,split='test'),
-        hhrlhf_preprocess(os.path.join('..','..','data','raw_data','hhrlhf','helpful-base'),'train.jsonl',global_index_generator,split='train'),
-        # hhrlhf_preprocess(os.path.join('..','..','data','raw_data','hhrlhf','helpful-base'),'test.jsonl',global_index_generator,split='test'),
-        hhrlhf_preprocess(os.path.join('..','..','data','raw_data','hhrlhf','helpful-online'),'train.jsonl',global_index_generator,split='train'),
-        # hhrlhf_preprocess(os.path.join('..','..','data','raw_data','hhrlhf','helpful-online'),'test.jsonl',global_index_generator,split='test'),
-        hhrlhf_preprocess(os.path.join('..','..','data','raw_data','hhrlhf','helpful-rejection'),'train.jsonl',global_index_generator,split='train'),
-        # hhrlhf_preprocess(os.path.join('..','..','data','raw_data','hhrlhf','helpful-rejection'),'test.jsonl',global_index_generator,split='test'),
+
+        hhrlhf_preprocess(os.path.join(base_dir,'harmless-base'),'train.jsonl',global_index_generator,split='train'),
+        # hhrlhf_preprocess(os.path.join(base_dir,'harmless-base'),'test.jsonl',global_index_generator,split='test'),
+        hhrlhf_preprocess(os.path.join(base_dir,'helpful-base'),'train.jsonl',global_index_generator,split='train'),
+        # hhrlhf_preprocess(os.path.join(base_dir,'helpful-base'),'test.jsonl',global_index_generator,split='test'),
+        hhrlhf_preprocess(os.path.join(base_dir,'helpful-online'),'train.jsonl',global_index_generator,split='train'),
+        # hhrlhf_preprocess(os.path.join(base_dir,'helpful-online'),'test.jsonl',global_index_generator,split='test'),
+        hhrlhf_preprocess(os.path.join(base_dir,'helpful-rejection'),'train.jsonl',global_index_generator,split='train'),
+        # hhrlhf_preprocess(os.path.join(base_dir,'helpful-rejection'),'test.jsonl',global_index_generator,split='test'),
     ]
-    hhrlhf_preprocess(os.path.join('..','..','data','raw_data','hhrlhf','harmless-base'),'test.jsonl',global_index_generator,split='dev')
-    hhrlhf_preprocess(os.path.join('..','..','data','raw_data','hhrlhf','helpful-base'),'test.jsonl',global_index_generator,split='dev')
-    hhrlhf_preprocess(os.path.join('..','..','data','raw_data','hhrlhf','helpful-online'),'test.jsonl',global_index_generator,split='dev')
-    hhrlhf_preprocess(os.path.join('..','..','data','raw_data','hhrlhf','helpful-rejection'),'test.jsonl',global_index_generator,split='dev')
-    
+    hhrlhf_preprocess(os.path.join(base_dir,'harmless-base'),'test.jsonl',global_index_generator,split='dev')
+    hhrlhf_preprocess(os.path.join(base_dir,'helpful-base'),'test.jsonl',global_index_generator,split='dev')
+    hhrlhf_preprocess(os.path.join(base_dir,'helpful-online'),'test.jsonl',global_index_generator,split='dev')
+    hhrlhf_preprocess(os.path.join(base_dir,'helpful-rejection'),'test.jsonl',global_index_generator,split='dev')
+
     global_prefixes = []
     global_extended_samples = 0
     for key in res:
@@ -233,7 +235,7 @@ if __name__ == "__main__":
                         }
                     )
                     global_extended_samples += sub_sample['target_num']
-    
-    
+
+
     print('Total Num: {}'.format(len(global_prefixes)))
     print('Total Extended Num: {}'.format(global_extended_samples))

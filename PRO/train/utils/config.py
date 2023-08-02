@@ -73,7 +73,7 @@ def parse_args():
         type=int,
         default=20,
     )
-    parser.add_argument("--num_train_epochs", type=int, default=1")
+    parser.add_argument("--num_train_epochs", type=int, default="1")
     parser.add_argument(
         "--max_train_steps",
         type=int,

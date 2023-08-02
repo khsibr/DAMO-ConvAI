@@ -16,7 +16,7 @@ from transformers import (
     AutoConfig,
     AutoModelForCausalLM,
 )
-from utils.metrics import create_reward_fn
+from train.utils.metrics import create_reward_fn
 
 class ProcessManager():
     def __init__(

@@ -1,11 +1,15 @@
 import os
 import sys
+
+from train.utils.reward_model import GPTNeoXRewardModelConfig
+
 sys.path.append("..")
 import json
 import random
 import numpy as np
 import tqdm
-from utils.metrics import create_reward_fn_3
+print(f"GPTNeoXRewardModelConfig={GPTNeoXRewardModelConfig}")
+from train.utils.metrics import create_reward_fn_3
 get_score, reward_batch_size = create_reward_fn_3()
 # get_score = None
 

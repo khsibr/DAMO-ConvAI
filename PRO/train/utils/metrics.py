@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from dataclasses import dataclass
-import utils.reward_model
+# import utils.reward_model
 import nltk
 
 def get_bleu(hyp, ref):
